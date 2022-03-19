@@ -7,3 +7,4 @@ and how u went to the trouble of putting it on heroku, fixing ur code, changing 
 good job :)
 https://cs50.readthedocs.io/heroku/: used this too
 https://finance-app-christot20.herokuapp.com/login: link to ur web app
+its private cuz cs50 doesnt want ppl to see solution, goes against acadmeic integrity code
