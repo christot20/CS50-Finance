@@ -170,7 +170,7 @@ def buy():
             new_shares = float(true_shares[0]) + float(number)
             db.execute("UPDATE indexinfo SET totalshares = ? WHERE id = ? AND symbol = ?", new_shares, id, stock_symbol)
         else:
-            db.execute("INSERT INTO indexinfo (id, symbol, name, totalshares, currentprice, realtotal) VALUES(?, ?, ?, ?, ?, ?)", id, stock['symbol'], stock['name'], number, usd(stock_price), float(cost))
+            db.execute("INSERT INTO indexinfo (id, symbol, name, totalshares, currentprice, realtotal) VALUES(?, ?, ?, ?, ?, ?)", id, stock['symbol'], stock['name'], number, stock_price, float(cost))
 
         # sum = db.execute("SELECT SUM(total) FROM holdings WHERE id = ?", id)
         # truetotal = [sub['SUM(total)'] for sub in sum]
