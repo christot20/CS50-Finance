@@ -23,7 +23,10 @@ app.config["SESSION_TYPE"] = "filesystem"
 Session(app)
 
 # Configure CS50 Library to use SQLite database
-db = SQL("sqlite:///finance.db")
+uri = os.getenv("DATABASE_URL")
+if uri.startswith("postgres://"):
+    uri = uri.replace("postgres://", "postgresql://")
+db = SQL(uri)
 
 # Make sure API key is set
 if not os.environ.get("API_KEY"):
@@ -52,6 +55,7 @@ def after_request(response):
 def index():
     """Show portfolio of stocks"""
     #stock = lookup(quote)                                                       #use this for price and shit
+    arrtotal = []
     id = session["user_id"]
     entries = db.execute("SELECT * FROM indexinfo WHERE id = ?", id)         #change the total and price numbers to actual price of stock at that time (use lookup and make total equal to lookupprice*shares)
     for index in range(len(entries)):
@@ -59,7 +63,9 @@ def index():
         #print(realprice)                              #formatting works
         #print(entries[index]['totalshares'])
         entries[index]['currentprice'] = usd(realprice['price'])
-        entries[index]['realtotal'] = usd(float(entries[index]['totalshares'])*float(realprice['price']))
+        print(float(realprice['price']))
+        entries[index]['realtotal'] = float(entries[index]['totalshares'])*float(realprice['price'])
+        arrtotal.append(entries[index]['realtotal'])
         db.execute("UPDATE indexinfo SET realtotal = ? WHERE id = ? AND symbol = ?", entries[index]['realtotal'], id, entries[index]['symbol'])
 
     cash = db.execute("SELECT cash FROM users WHERE id = ?", id)                                            #CASH IS CORRECT AND TOTAL FOR EACH STOCK IS CORRECT, fix total equation
@@ -69,16 +75,21 @@ def index():
     # print(entries[index]['realtotal'])
     # print(money)
 
-    totalentry = db.execute("SELECT realtotal FROM indexinfo WHERE id = ?", id)
-    valuetotal = [sub['realtotal'] for sub in totalentry]   #total is adding
+    #totalentry = db.execute("SELECT realtotal FROM indexinfo WHERE id = ?", id)
+    #valuetotal = [sub['realtotal'] for sub in totalentry]   #total is adding
+    valuetotal = arrtotal
+
     #print(valuetotal)
     #valuetotal = [float(x) for x in valuetotal]
     #value = Decimal(sub(r'[^\d.]', '', money))
     for i in range(len(valuetotal)):
-        dollars = float(valuetotal[i][1:].replace(',', '')) #ended here to replace currency to float, this thing is fucking crazy :o
+        dollars = float(valuetotal[i]) #ended here to replace currency to float, this thing is fucking crazy :o
         valuetotal[i] = dollars                                 #check if total and all other numbers work when changing price on market open and work on sell
         #print(value)                                           #i also changed layout.html from container fluid to container
     #print(valuetotal)
+    print(valuetotal)
+    print(float(sum(valuetotal)))
+    print(float(value[0]))
     total = float(sum(valuetotal)) + float(value[0])
     total = usd(total)
     #dollar_dec = float(dollars[1:])
@@ -146,7 +157,9 @@ def buy():
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
         # stock_price = float(format(stock_price, '.2f'))
         # cost = float(cost)
-        db.execute("INSERT INTO holdings (id, symbol, name, shares, price, total, time) VALUES(?, ?, ?, ?, ?, ?, ?)", id, stock['symbol'], stock['name'], number, stock_price, cost, dt_string)
+        # funds = round(float(funds), 2)
+        # funds = float(funds)
+        db.execute("INSERT INTO holdings (id, symbol, name, shares, price, total, time) VALUES(?, ?, ?, ?, ?, ?, ?)", id, stock['symbol'], stock['name'], number, usd(stock_price), float(cost), dt_string)
 
         stock_symbol = stock['symbol']
         symbols = db.execute("SELECT symbol FROM indexinfo WHERE id = ?", id)
@@ -157,7 +170,7 @@ def buy():
             new_shares = float(true_shares[0]) + float(number)
             db.execute("UPDATE indexinfo SET totalshares = ? WHERE id = ? AND symbol = ?", new_shares, id, stock_symbol)
         else:
-            db.execute("INSERT INTO indexinfo (id, symbol, name, totalshares, currentprice, realtotal) VALUES(?, ?, ?, ?, ?, ?)", id, stock['symbol'], stock['name'], number, stock_price, cost)
+            db.execute("INSERT INTO indexinfo (id, symbol, name, totalshares, currentprice, realtotal) VALUES(?, ?, ?, ?, ?, ?)", id, stock['symbol'], stock['name'], number, usd(stock_price), float(cost))
 
         # sum = db.execute("SELECT SUM(total) FROM holdings WHERE id = ?", id)
         # truetotal = [sub['SUM(total)'] for sub in sum]
@@ -336,7 +349,7 @@ def sell():
         now = datetime.now()
         dt_string = now.strftime("%d/%m/%Y %H:%M:%S")
 
-        db.execute("INSERT INTO holdings (id, symbol, name, shares, price, total, time) VALUES(?, ?, ?, ?, ?, ?, ?)", id, stock['symbol'], stock['name'], number, stock_price, cost, dt_string)
+        db.execute("INSERT INTO holdings (id, symbol, name, shares, price, total, time) VALUES(?, ?, ?, ?, ?, ?, ?)", id, stock['symbol'], stock['name'], number, usd(stock_price), float(cost), dt_string)
 
         # if stock_symbol in knownSymbols:
         shares = db.execute("SELECT totalshares FROM indexinfo WHERE id = ? AND symbol = ?", id, stock_symbol)
@@ -387,8 +400,8 @@ def add():
         funds = float(funds)
         if funds <= 0:
             return apology("enter a valid amount to deposit", 403)
-        elif funds.isnumeric() == False:
-            return apology("please enter a valid number")
+        # elif funds.isnumeric() == False:
+        #     return apology("please enter a valid number")
 
         cash = db.execute("SELECT cash FROM users WHERE id = ?", id)
         value = [sub['cash'] for sub in cash]
@@ -431,8 +444,8 @@ def remove():
             return apology("enter a valid amount to deposit", 403)
         elif funds > float(value[0]):
             return apology("cannot withdraw more cash than present", 403)
-        elif funds.isnumeric() == False:
-            return apology("please enter a valid number")
+        # elif funds.isnumeric() == False:
+        #     return apology("please enter a valid number")
 
         print(value[0])
         print(funds)
