@@ -25,7 +25,7 @@
                 <td class="text-start">{{ stock['name'] }}</td>
                 <td class="text-end">{{ stock['totalshares'] }}</td>
                 <td class="text-end">{{ stock['currentprice'] }}</td>  <!-- try to get the current price and current total of the stock and combine tickers that are the same on one thing -->
-                <td class="text-end">{{ stock['realtotal'] }}</td>  <!-- maybe make a separate db to show who holds what and how many shares they hold -->
+                <td class="text-end">{{ stock['realtotal'] | usd }}</td>  <!-- maybe make a separate db to show who holds what and how many shares they hold -->
             </tr>
             {% endfor %}
         </tbody>
