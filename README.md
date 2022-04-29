@@ -1,10 +1,17 @@
 # finance
-nice one, you did it
-talk about how you had to implement a sql database in sqllite, use flask for backend and make all functionality and use bootstrap for the looks
-how it was a cs50 project and first step at full stack web dev
-how u went above and beyond by adding requirements to passwords and allowing deposit/withdraw
-and how u went to the trouble of putting it on heroku, fixing ur code, changing ur database and migrating to postgres, and staying up just to see it work, like with history and the formatting being off
-good job :)
-https://cs50.readthedocs.io/heroku/: used this too
-https://finance-app-christot20.herokuapp.com/login: link to ur web app
-its private cuz cs50 doesnt want ppl to see solution, goes against acadmeic integrity code
+This was the final problem to work on for Week 8 of CS50 and it involved creating a lightweight full stack app using a mixture of flask, bootstrap, sqlite, and html.
+This project was my first attempt at working on a real web app that had functionality and allowed for users to interact with the app. 
+All past projects of mine with web development were merely front-end projects.
+The app allows for users to log in or register and, upon registering, gives the user a set amount of money to use for stock trading. 
+The user ius able to look up stock prices, buy and sell stocks, view their history of stocks sold and purchased, and even add/deposit funds.
+The app tests for if the user name already exists, requires spedial characters, a number, and a certain length for each password.
+The app was styled using bootstrap and all the data for stocks was provided by CS50.
+I took the liberty of actually deploying this app on heroku once I finished the project. This forced me to switch from an sqlite db to a postgresql db.
+I used this link for guidance on the switch: https://cs50.readthedocs.io/heroku/
+The app can be looked at on this link here: https://finance-app-christot20.herokuapp.com/login
+
+I have since finished cs50 and am truly grateful for the experience.
+![image](https://user-images.githubusercontent.com/73673297/166031050-cd1e5894-b32c-4e7f-985d-5d55fd7a6587.png)
+
+
+
