@@ -12,7 +12,8 @@ I took the liberty of actually deploying this app on heroku once I finished the 
 I used this link for guidance on the switch: https://cs50.readthedocs.io/heroku/
 
 The app can be looked at on this link here: ~~https://finance-app-christot20.herokuapp.com/login~~
-Heroku app has migrated ever since free tier was discontinued: christot20.pythonanywhere.com
+
+Heroku app has migrated ever since free tier was discontinued: [christot20.pythonanywhere.com](https://christot20.pythonanywhere.com/login)
 
 I have since finished cs50 and am truly grateful for the experience.
 ![image](https://user-images.githubusercontent.com/73673297/166031050-cd1e5894-b32c-4e7f-985d-5d55fd7a6587.png)
